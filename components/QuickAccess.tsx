@@ -23,6 +23,10 @@ const QuickAccess = () => {
       router.push('/planos' as any);
       return;
     }
+    if (key === 'history') {
+      router.push('/historico' as any);
+      return;
+    }
     // placeholder for other actions
     console.log('pressed', key);
   }

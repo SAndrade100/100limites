@@ -39,6 +39,12 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen
+        name="historico"
+        options={{
+          title: "Histórico",
+        }}
+      />
+      <Stack.Screen
         name="treino-ativo/[id]"
         options={{
           headerShown: false,
