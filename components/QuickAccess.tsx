@@ -16,8 +16,11 @@ const QuickAccess = () => {
   function handlePress(key: string) {
     console.log('QuickAccess pressed', key);
     if (key === 'workouts') {
-      // use string path push; cast to any to satisfy types
       router.push('/treinos' as any);
+      return;
+    }
+    if (key === 'plans') {
+      router.push('/planos' as any);
       return;
     }
     // placeholder for other actions

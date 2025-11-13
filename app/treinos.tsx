@@ -27,7 +27,7 @@ const mockWorkouts = [
 
 export default function Treinos() {
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['bottom']}>
       <Header name="Seus Treinos" />
       <View style={styles.container}>
         <Text style={styles.heading}>Meus treinos</Text>
