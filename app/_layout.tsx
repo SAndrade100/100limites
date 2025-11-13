@@ -32,6 +32,19 @@ export default function RootLayout() {
           title: "Planos de Treino",
         }}
       />
+      <Stack.Screen
+        name="planos/[id]"
+        options={{
+          title: "Detalhes do Treino",
+        }}
+      />
+      <Stack.Screen
+        name="treino-ativo/[id]"
+        options={{
+          headerShown: false,
+          presentation: 'fullScreenModal',
+        }}
+      />
     </Stack>
   );
 }

@@ -1,6 +1,7 @@
+import CustomModal from '@/components/CustomModal';
 import Header from '@/components/Header';
 import WorkoutCard from '@/components/WorkoutCard';
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -26,6 +27,20 @@ const mockWorkouts = [
 ];
 
 export default function Treinos() {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState<typeof mockWorkouts[0] | null>(null);
+
+  const handleWorkoutPress = (workout: typeof mockWorkouts[0]) => {
+    setSelectedWorkout(workout);
+    setShowModal(true);
+  };
+
+  const handleStartWorkout = () => {
+    setShowModal(false);
+    // Aqui você pode navegar para a tela de treino ativo
+    console.log('Iniciando treino:', selectedWorkout?.title);
+  };
+
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <Header name="Seus Treinos" />
@@ -34,10 +49,29 @@ export default function Treinos() {
         <FlatList
           data={mockWorkouts}
           keyExtractor={(i) => i.id}
-          renderItem={({ item }) => <WorkoutCard workout={item} />}
+          renderItem={({ item }) => (
+            <WorkoutCard workout={item} onPress={() => handleWorkoutPress(item)} />
+          )}
           contentContainerStyle={{ paddingBottom: 40 }}
         />
       </View>
+
+      <CustomModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        title="Iniciar Treino"
+        message={selectedWorkout ? `Pronto para começar o ${selectedWorkout.title}?` : ''}
+        icon="dumbbell"
+        iconColor="#87084E"
+        primaryButton={{
+          text: "Vamos lá!",
+          onPress: handleStartWorkout,
+        }}
+        secondaryButton={{
+          text: "Cancelar",
+          onPress: () => setShowModal(false),
+        }}
+      />
     </SafeAreaView>
   );
 }
