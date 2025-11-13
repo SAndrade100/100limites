@@ -6,8 +6,8 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const mockWorkout = {
+  id: "p1", // ID do Treino A
   title: "Treino A — Pernas",
-  time: "10:00",
   items: [
     "Agachamento — 4x10",
     "Leg press — 3x12",

@@ -1,14 +1,17 @@
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CustomModal from "./CustomModal";
 
 type Plan = {
   title: string;
-  time: string;
+  time?: string;
   items: string[];
+  id?: string;
 };
 
 const FoodPlanCard = ({ plan }: { plan: Plan }) => {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false);
 
   const handleStart = () => {
@@ -28,7 +31,7 @@ const FoodPlanCard = ({ plan }: { plan: Plan }) => {
             ))}
           </View>
           <View style={styles.right}>
-            <Text style={styles.time}>{plan.time}</Text>
+            {plan.time && <Text style={styles.time}>{plan.time}</Text>}
             <TouchableOpacity style={styles.start} activeOpacity={0.85} onPress={handleStart}>
               <Text style={styles.startText}>Iniciar</Text>
             </TouchableOpacity>
@@ -47,8 +50,9 @@ const FoodPlanCard = ({ plan }: { plan: Plan }) => {
           text: "Vamos lá!",
           onPress: () => {
             setShowModal(false);
-            // Aqui você pode adicionar navegação para a tela de treino ativo
-            console.log('Iniciando treino:', plan.title);
+            // Navega para a tela de treino ativo (padrão p1 se não tiver ID)
+            const workoutId = plan.id || 'p1';
+            router.push(`/treino-ativo/${workoutId}` as any);
           },
         }}
         secondaryButton={{
