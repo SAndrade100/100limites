@@ -27,6 +27,10 @@ const QuickAccess = () => {
       router.push('/historico' as any);
       return;
     }
+    if (key === 'profile') {
+      router.push('/perfil' as any);
+      return;
+    }
     // placeholder for other actions
     console.log('pressed', key);
   }
