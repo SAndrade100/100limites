@@ -1,4 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -10,14 +11,35 @@ const items = [
 ];
 
 const QuickAccess = () => {
+  const router = useRouter();
+
+  function handlePress(key: string) {
+    console.log('QuickAccess pressed', key);
+    if (key === 'workouts') {
+      // use string path push; cast to any to satisfy types
+      router.push('/treinos' as any);
+      return;
+    }
+    // placeholder for other actions
+    console.log('pressed', key);
+  }
+
   return (
     <View style={styles.row}>
       {items.map((it) => (
         <View key={it.key} style={styles.itemWrap}>
-          <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.8}
+            onPress={() => handlePress(it.key)}
+            accessibilityRole="button"
+            accessibilityLabel={it.label}
+            accessibilityHint={`Abrir ${it.label}`}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             {it.icon}
+            <Text style={styles.labelInside}>{it.label}</Text>
           </TouchableOpacity>
-          <Text style={styles.label}>{it.label}</Text>
         </View>
       ))}
     </View>
@@ -37,6 +59,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   label: { marginTop: 8, fontSize: 12, color: "#87084E" },
+  labelInside: { marginTop: 8, fontSize: 12, color: "#87084E" },
 });
 
 export default QuickAccess;

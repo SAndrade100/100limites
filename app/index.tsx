@@ -2,7 +2,8 @@ import FoodPlanCard from "@/components/FoodPlanCard";
 import Header from "@/components/Header";
 import QuickAccess from "@/components/QuickAccess";
 import React from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const mockWorkout = {
   title: "Treino A — Pernas",

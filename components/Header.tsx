@@ -11,7 +11,7 @@ const Header = ({ name, avatar }: Props) => {
     <View style={styles.header}>
       <View style={styles.row}>
         <Image
-          source={avatar ? { uri: avatar } : require("../assets/images/icon.png")}
+          source={avatar ? { uri: avatar } : require("../assets/images/user.jpg")}
           style={styles.avatar}
         />
         <View style={styles.textWrap}>

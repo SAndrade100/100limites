@@ -16,4 +16,6 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
+  ,
+  "exclude": ["app-example"]
 }

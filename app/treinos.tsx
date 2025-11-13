@@ -1,0 +1,49 @@
+import Header from '@/components/Header';
+import WorkoutCard from '@/components/WorkoutCard';
+import React from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const mockWorkouts = [
+  {
+    id: 'w1',
+    title: 'Treino A — Pernas',
+    time: '10:00',
+    items: ['Agachamento 4x10', 'Leg press 3x12', 'Stiff 3x10'],
+  },
+  {
+    id: 'w2',
+    title: 'Treino B — Peito / Tríceps',
+    time: '11:30',
+    items: ['Supino 4x8', 'Cross-over 3x12', 'Tríceps 3x10'],
+  },
+  {
+    id: 'w3',
+    title: 'Treino C — Costas / Bíceps',
+    time: '18:00',
+    items: ['Puxada 4x10', 'Remada 3x12', 'Rosca 3x10'],
+  },
+];
+
+export default function Treinos() {
+  return (
+    <SafeAreaView style={styles.safe}>
+      <Header name="Seus Treinos" />
+      <View style={styles.container}>
+        <Text style={styles.heading}>Meus treinos</Text>
+        <FlatList
+          data={mockWorkouts}
+          keyExtractor={(i) => i.id}
+          renderItem={({ item }) => <WorkoutCard workout={item} />}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: '#FFF5F8' },
+  container: { padding: 16, paddingTop: 12 },
+  heading: { fontSize: 20, fontWeight: '700', color: '#3A1224', marginBottom: 12 },
+});
