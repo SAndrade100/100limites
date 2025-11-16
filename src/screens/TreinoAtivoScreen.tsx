@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomModal from '../components/CustomModal';
-import { useWorkout } from '../contexts/WorkoutContext';
 import { useHistory } from '../contexts/HistoryContext';
+import { useWorkout } from '../contexts/WorkoutContext';
 
 export default function TreinoAtivoScreen() {
   const route = useRoute<any>();
