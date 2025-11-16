@@ -1,24 +1,26 @@
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-
-// Importar telas (vou criar depois)
-import HomeScreen from './screens/HomeScreen';
-import TreinosScreen from './screens/TreinosScreen';
-import PlanosScreen from './screens/PlanosScreen';
-import PlanoDetailsScreen from './screens/PlanoDetailsScreen';
-import TreinoAtivoScreen from './screens/TreinoAtivoScreen';
+import React from 'react';
+import { HistoryProvider, UserProvider, WorkoutProvider } from './contexts';
 import HistoricoScreen from './screens/HistoricoScreen';
+import HomeScreen from './screens/HomeScreen';
 import PerfilScreen from './screens/PerfilScreen';
+import PlanoDetailsScreen from './screens/PlanoDetailsScreen';
+import PlanosScreen from './screens/PlanosScreen';
+import TreinoAtivoScreen from './screens/TreinoAtivoScreen';
+import TreinosScreen from './screens/TreinosScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar style="light" />
-      <Stack.Navigator
+    <UserProvider>
+      <WorkoutProvider>
+        <HistoryProvider>
+          <NavigationContainer>
+            <StatusBar style="light" />
+            <Stack.Navigator
         screenOptions={{
           headerStyle: {
             backgroundColor: '#87084E',
@@ -69,5 +71,8 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+        </HistoryProvider>
+      </WorkoutProvider>
+    </UserProvider>
   );
 }
