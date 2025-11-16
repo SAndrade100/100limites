@@ -10,16 +10,54 @@ import { useWorkout } from '../contexts/WorkoutContext';
 export default function TreinoAtivoScreen() {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
-  const { id } = route.params;
+  const id: string | undefined = route.params?.id ?? route.params?.planId;
   const { getPlanById } = useWorkout();
   const { addWorkoutToHistory } = useHistory();
-  const plan = getPlanById(id);
+  const plan = id ? getPlanById(id) : undefined;
   const [completedExercises, setCompletedExercises] = useState<number[]>([]);
   const [showFinishModal, setShowFinishModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [startTime] = useState(new Date());
 
-  if (!plan) return null;
+  if (!id) {
+    return (
+      <SafeAreaView style={styles.safe} edges={['bottom']}>
+        <View style={styles.header}> 
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons name="close" size={28} color="#fff" />
+          </TouchableOpacity>
+          <View style={{flex: 1, marginLeft: 16}}>
+            <Text style={styles.headerTitle}>Treino inválido</Text>
+            <Text style={styles.headerSubtitle}>Nenhum treino selecionado</Text>
+          </View>
+        </View>
+        <View style={{ padding: 16 }}>
+          <Text style={{ color: colors.dark }}>Não foi possível encontrar o treino solicitado.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!plan) {
+    return (
+      <SafeAreaView style={styles.safe} edges={['bottom']}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <MaterialCommunityIcons name="close" size={28} color="#fff" />
+          </TouchableOpacity>
+          <View style={{flex: 1, marginLeft: 16}}>
+            <Text style={styles.headerTitle}>Treino não encontrado</Text>
+            <Text style={styles.headerSubtitle}>O plano solicitado não existe ou foi removido.</Text>
+          </View>
+        </View>
+        <View style={{ padding: 16 }}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 12 }}>
+            <Text style={{ color: colors.primary }}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const toggleExercise = (index: number) => {
     if (completedExercises.includes(index)) {
@@ -29,7 +67,7 @@ export default function TreinoAtivoScreen() {
     }
   };
 
-  const progress = (completedExercises.length / plan.exercises.length) * 100;
+  const progress = plan.exercises.length ? (completedExercises.length / plan.exercises.length) * 100 : 0;
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
