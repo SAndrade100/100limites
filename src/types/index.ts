@@ -40,4 +40,71 @@ export interface User {
     weeksActive: number;
     consistency: number; // porcentagem
   };
+  assessment?: AnthropometricAssessment;
+}
+
+export interface Skinfolds {
+  bicipital: number; // mm
+  tricipital: number;
+  subscapular: number;
+  peitoral: number;
+  axilarMedia: number;
+  cristaIliaca: number;
+  supraespinhal: number;
+  abdominal: number;
+  coxaMedia: number;
+  panturrilha: number;
+}
+
+export interface PerimetersCm {
+  bracoRelaxado: number;
+  bracoContraido: number;
+  cintura: number;
+  abdomen: number;
+  quadril: number;
+  coxaMedia: number;
+  panturrilha: number;
+}
+
+export interface Basics {
+  massaKg: number;
+  estaturaM: number;
+  idade?: number;
+  dataAvaliacao?: string; // ISO
+}
+
+export interface BodyCompositionDistribution {
+  massaCorporalTotalKg: number;
+  massaMuscularEsqueleticaKg: number;
+  massaGordaKg: number;
+  massaRestanteKg: number;
+}
+
+export interface AnthropometricIndices {
+  imc: number;
+  imcClassificacao: string;
+  cinturaClassificacao: string;
+  relacaoCinturaQuadril: number;
+  relacaoCinturaQuadrilClassificacao: string;
+  indiceConicidade: number;
+  indiceConicidadeClassificacao: string;
+  relacaoCinturaEstatura: number;
+  relacaoCinturaEstaturaClassificacao: string;
+}
+
+export interface AnthropometricAssessment {
+  basics: Basics;
+  perimeters: PerimetersCm;
+  skinfolds: Skinfolds;
+  indices: AnthropometricIndices;
+  bodyComposition: BodyCompositionDistribution;
+  observations?: string[];
+  evaluator?: string;
+  instruments?: {
+    balanca?: string;
+    estadimetro?: string;
+    plicometro?: string;
+    paquimetro?: string;
+    contato?: string;
+  };
 }

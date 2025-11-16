@@ -4,26 +4,25 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomModal from '../components/CustomModal';
 import Header from '../components/Header';
-import WorkoutCard from '../components/WorkoutCard';
+import PlanCard from '../components/PlanCard';
 import { useWorkout } from '../contexts/WorkoutContext';
-import { Workout } from '../types';
 
 export default function TreinosScreen() {
   const navigation = useNavigation<any>();
-  const { workouts } = useWorkout();
+  const { workouts, plans } = useWorkout();
   const [showModal, setShowModal] = useState(false);
-  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  const handleWorkoutPress = (workout: Workout) => {
-    setSelectedWorkout(workout);
+  const handlePlanPress = (plan: any) => {
+    setSelectedPlan(plan);
     setShowModal(true);
   };
 
   const handleStartWorkout = () => {
     setShowModal(false);
-    if (selectedWorkout) {
-      navigation.navigate('TreinoAtivo', { id: selectedWorkout.id });
+    if (selectedPlan) {
+      navigation.navigate('TreinoAtivo', { id: selectedPlan.id });
     }
   };
 
@@ -33,10 +32,10 @@ export default function TreinosScreen() {
       <View style={styles.container}>
         <Text style={styles.heading}>Meus treinos</Text>
         <FlatList
-          data={workouts}
+          data={plans}
           keyExtractor={(i) => i.id}
           renderItem={({ item }) => (
-            <WorkoutCard workout={item} onPress={() => handleWorkoutPress(item)} />
+            <PlanCard plan={item} onPress={() => handlePlanPress(item)} />
           )}
           contentContainerStyle={{ paddingBottom: 40 }}
         />
@@ -45,8 +44,8 @@ export default function TreinosScreen() {
       <CustomModal
         visible={showModal}
         onClose={() => setShowModal(false)}
-        title="Iniciar Treino"
-        message={selectedWorkout ? `Pronto para começar o ${selectedWorkout.title}?` : ''}
+  title="Iniciar Treino"
+  message={selectedPlan ? `Pronto para começar o ${selectedPlan.name}?` : ''}
         icon="dumbbell"
         iconColor="#87084E"
         primaryButton={{

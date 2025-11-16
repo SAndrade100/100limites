@@ -8,6 +8,7 @@ import CreateWorkoutScreen from './screens/CreateWorkoutScreen';
 import HistoricoScreen from './screens/HistoricoScreen';
 import HomeScreen from './screens/HomeScreen';
 // PerfilScreen removed - replaced by CRUD screens
+import AvaliacaoAntropometricaScreen from './screens/AvaliacaoAntropometricaScreen';
 import ExercisesScreen from './screens/ExercisesScreen';
 import PlanoDetailsScreen from './screens/PlanoDetailsScreen';
 import PlanosCrudScreen from './screens/PlanosCrudScreen';
@@ -81,6 +82,11 @@ export default function App() {
           name="Historico" 
           component={HistoricoScreen}
           options={{ title: 'Histórico' }}
+        />
+        <Stack.Screen
+          name="Avaliacao"
+          component={AvaliacaoAntropometricaScreen}
+          options={{ title: 'Avaliação' }}
         />
         {/* Perfil removed - profile functionality replaced by user context or separate screens if needed */}
       </Stack.Navigator>
