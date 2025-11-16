@@ -1,0 +1,217 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomModal from '../components/CustomModal';
+
+const mockPlans = [
+  {
+    id: 'p1',
+    name: 'Treino A — Pernas',
+    exercises: [
+      { name: 'Agachamento', sets: '4x10' },
+      { name: 'Leg Press', sets: '3x12' },
+      { name: 'Stiff', sets: '3x10' },
+      { name: 'Cadeira Extensora', sets: '3x12' },
+    ],
+  },
+  {
+    id: 'p2',
+    name: 'Treino B — Peito / Tríceps',
+    exercises: [
+      { name: 'Supino Reto', sets: '4x8' },
+      { name: 'Supino Inclinado', sets: '3x10' },
+      { name: 'Crucifixo', sets: '3x10' },
+      { name: 'Tríceps Testa', sets: '3x12' },
+    ],
+  },
+  {
+    id: 'p3',
+    name: 'Treino C — Costas / Bíceps',
+    exercises: [
+      { name: 'Puxada', sets: '4x10' },
+      { name: 'Remada', sets: '3x10' },
+      { name: 'Rosca Direta', sets: '3x12' },
+      { name: 'Rosca Martelo', sets: '3x10' },
+    ],
+  },
+];
+
+export default function TreinoAtivoScreen() {
+  const route = useRoute<any>();
+  const navigation = useNavigation<any>();
+  const { id } = route.params;
+  const plan = mockPlans.find(p => p.id === id);
+  const [completedExercises, setCompletedExercises] = useState<number[]>([]);
+  const [showFinishModal, setShowFinishModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  if (!plan) return null;
+
+  const toggleExercise = (index: number) => {
+    if (completedExercises.includes(index)) {
+      setCompletedExercises(completedExercises.filter(i => i !== index));
+    } else {
+      setCompletedExercises([...completedExercises, index]);
+    }
+  };
+
+  const progress = (completedExercises.length / plan.exercises.length) * 100;
+
+  return (
+    <SafeAreaView style={styles.safe} edges={['bottom']}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialCommunityIcons name="close" size={28} color="#fff" />
+        </TouchableOpacity>
+        <View style={{flex: 1, marginLeft: 16}}>
+          <Text style={styles.headerTitle}>{plan.name}</Text>
+          <Text style={styles.headerSubtitle}>{completedExercises.length} de {plan.exercises.length} concluídos</Text>
+        </View>
+      </View>
+
+      <View style={styles.progressBar}>
+        <View style={[styles.progressFill, { width: `${progress}%` }]} />
+      </View>
+
+      <ScrollView contentContainerStyle={styles.container}>
+        {plan.exercises.map((exercise, index) => {
+          const isCompleted = completedExercises.includes(index);
+          return (
+            <TouchableOpacity
+              key={index}
+              style={[styles.exerciseCard, isCompleted && styles.exerciseCardCompleted]}
+              onPress={() => toggleExercise(index)}
+            >
+              <View style={[styles.checkbox, isCompleted && styles.checkboxChecked]}>
+                {isCompleted && <MaterialCommunityIcons name="check" size={20} color="#fff" />}
+              </View>
+              <View style={styles.exerciseInfo}>
+                <Text style={[styles.exerciseName, isCompleted && styles.textCompleted]}>
+                  {exercise.name}
+                </Text>
+                <Text style={[styles.exerciseSets, isCompleted && styles.textCompleted]}>
+                  {exercise.sets}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+
+        <TouchableOpacity
+          style={styles.finishButton}
+          onPress={() => setShowFinishModal(true)}
+        >
+          <Text style={styles.finishButtonText}>Finalizar Treino</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      <CustomModal
+        visible={showFinishModal}
+        onClose={() => setShowFinishModal(false)}
+        title="Finalizar Treino"
+        message="Deseja finalizar o treino agora?"
+        icon="check-circle"
+        iconColor="#87084E"
+        primaryButton={{
+          text: "Finalizar",
+          onPress: () => {
+            setShowFinishModal(false);
+            setShowSuccessModal(true);
+          },
+        }}
+        secondaryButton={{
+          text: "Continuar",
+          onPress: () => setShowFinishModal(false),
+        }}
+      />
+
+      <CustomModal
+        visible={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          navigation.goBack();
+        }}
+        title="Parabéns!"
+        message="Treino concluído com sucesso!"
+        icon="trophy"
+        iconColor="#87084E"
+        primaryButton={{
+          text: "OK",
+          onPress: () => {
+            setShowSuccessModal(false);
+            navigation.goBack();
+          },
+        }}
+      />
+    </SafeAreaView>
+  );
+}
+
+const colors = {
+  primary: '#87084E',
+  light: '#FFF5F8',
+  dark: '#3A1224',
+};
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.light },
+  header: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerTitle: { color: '#fff', fontSize: 18, fontWeight: '700' },
+  headerSubtitle: { color: 'rgba(255,255,255,0.9)', fontSize: 13, marginTop: 2 },
+  progressBar: {
+    height: 4,
+    backgroundColor: '#e0e0e0',
+  },
+  progressFill: {
+    height: 4,
+    backgroundColor: colors.primary,
+  },
+  container: { padding: 16, paddingBottom: 40 },
+  exerciseCard: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    alignItems: 'center',
+    elevation: 1,
+  },
+  exerciseCardCompleted: {
+    backgroundColor: '#f5f5f5',
+  },
+  checkbox: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  exerciseInfo: { flex: 1 },
+  exerciseName: { fontSize: 16, fontWeight: '600', color: colors.dark },
+  exerciseSets: { fontSize: 13, color: '#6b6b6b', marginTop: 2 },
+  textCompleted: { textDecorationLine: 'line-through', opacity: 0.6 },
+  finishButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 24,
+    elevation: 2,
+  },
+  finishButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+});
