@@ -5,6 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const items = [
   { key: "workouts", label: "Treinos", icon: <MaterialCommunityIcons name="dumbbell" size={20} color="#87084E" /> },
+  { key: "exercises", label: "Exercícios", icon: <MaterialCommunityIcons name="weight-lifter" size={20} color="#87084E" /> },
   { key: "plans", label: "Planos", icon: <MaterialCommunityIcons name="calendar-check" size={20} color="#87084E" /> },
   { key: "history", label: "Histórico", icon: <MaterialCommunityIcons name="history" size={20} color="#87084E" /> },
 ];
@@ -18,6 +19,10 @@ const QuickAccess = () => {
       navigation.navigate('Treinos');
       return;
     }
+      if (key === 'exercises') {
+        navigation.navigate('Exercises');
+        return;
+      }
     if (key === 'plans') {
       navigation.navigate('Planos');
       return;

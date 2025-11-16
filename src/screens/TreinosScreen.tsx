@@ -76,10 +76,11 @@ export default function TreinosScreen() {
         icon="plus-box"
         iconColor="#87084E"
         secondaryButton={{
-          text: 'Adicionar Exercício',
+          text: 'Ver Exercícios',
           onPress: () => {
+            // Abre a lista de exercícios (CRUD) a partir do menu
             setShowAddModal(false);
-            navigation.navigate('AddExercise');
+            navigation.navigate('Exercises');
           },
         }}
         primaryButton={{
