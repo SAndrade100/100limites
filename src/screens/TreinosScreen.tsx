@@ -5,31 +5,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomModal from '../components/CustomModal';
 import Header from '../components/Header';
 import WorkoutCard from '../components/WorkoutCard';
-
-const mockWorkouts = [
-  {
-    id: 'p1',
-    title: 'Treino A — Pernas',
-    items: ['Agachamento 4x10', 'Leg press 3x12', 'Stiff 3x10'],
-  },
-  {
-    id: 'p2',
-    title: 'Treino B — Peito / Tríceps',
-    items: ['Supino 4x8', 'Cross-over 3x12', 'Tríceps 3x10'],
-  },
-  {
-    id: 'p3',
-    title: 'Treino C — Costas / Bíceps',
-    items: ['Puxada 4x10', 'Remada 3x12', 'Rosca 3x10'],
-  },
-];
+import { useWorkout } from '../contexts/WorkoutContext';
+import { Workout } from '../types';
 
 export default function TreinosScreen() {
   const navigation = useNavigation<any>();
+  const { workouts } = useWorkout();
   const [showModal, setShowModal] = useState(false);
-  const [selectedWorkout, setSelectedWorkout] = useState<typeof mockWorkouts[0] | null>(null);
+  const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
 
-  const handleWorkoutPress = (workout: typeof mockWorkouts[0]) => {
+  const handleWorkoutPress = (workout: Workout) => {
     setSelectedWorkout(workout);
     setShowModal(true);
   };
@@ -47,7 +32,7 @@ export default function TreinosScreen() {
       <View style={styles.container}>
         <Text style={styles.heading}>Meus treinos</Text>
         <FlatList
-          data={mockWorkouts}
+          data={workouts}
           keyExtractor={(i) => i.id}
           renderItem={({ item }) => (
             <WorkoutCard workout={item} onPress={() => handleWorkoutPress(item)} />

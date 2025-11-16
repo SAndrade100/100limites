@@ -4,48 +4,20 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomModal from '../components/CustomModal';
-
-const mockPlans = [
-  {
-    id: 'p1',
-    name: 'Treino A — Pernas',
-    exercises: [
-      { name: 'Agachamento', sets: '4x10' },
-      { name: 'Leg Press', sets: '3x12' },
-      { name: 'Stiff', sets: '3x10' },
-      { name: 'Cadeira Extensora', sets: '3x12' },
-    ],
-  },
-  {
-    id: 'p2',
-    name: 'Treino B — Peito / Tríceps',
-    exercises: [
-      { name: 'Supino Reto', sets: '4x8' },
-      { name: 'Supino Inclinado', sets: '3x10' },
-      { name: 'Crucifixo', sets: '3x10' },
-      { name: 'Tríceps Testa', sets: '3x12' },
-    ],
-  },
-  {
-    id: 'p3',
-    name: 'Treino C — Costas / Bíceps',
-    exercises: [
-      { name: 'Puxada', sets: '4x10' },
-      { name: 'Remada', sets: '3x10' },
-      { name: 'Rosca Direta', sets: '3x12' },
-      { name: 'Rosca Martelo', sets: '3x10' },
-    ],
-  },
-];
+import { useWorkout } from '../contexts/WorkoutContext';
+import { useHistory } from '../contexts/HistoryContext';
 
 export default function TreinoAtivoScreen() {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { id } = route.params;
-  const plan = mockPlans.find(p => p.id === id);
+  const { getPlanById } = useWorkout();
+  const { addWorkoutToHistory } = useHistory();
+  const plan = getPlanById(id);
   const [completedExercises, setCompletedExercises] = useState<number[]>([]);
   const [showFinishModal, setShowFinishModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [startTime] = useState(new Date());
 
   if (!plan) return null;
 
@@ -117,6 +89,23 @@ export default function TreinoAtivoScreen() {
         primaryButton={{
           text: "Finalizar",
           onPress: () => {
+            // Calcula a duração do treino em minutos
+            const endTime = new Date();
+            const durationMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000);
+            
+            // Salva no histórico
+            if (plan) {
+              addWorkoutToHistory({
+                id: Date.now().toString(),
+                planId: plan.id,
+                planName: plan.name,
+                date: endTime.toISOString(),
+                duration: durationMinutes,
+                completedExercises: completedExercises.length,
+                totalExercises: plan.exercises.length,
+              });
+            }
+            
             setShowFinishModal(false);
             setShowSuccessModal(true);
           },

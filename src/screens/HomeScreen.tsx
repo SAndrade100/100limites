@@ -4,21 +4,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FoodPlanCard from "../components/FoodPlanCard";
 import Header from "../components/Header";
 import QuickAccess from "../components/QuickAccess";
-
-const mockWorkout = {
-  id: "p1",
-  title: "Treino A — Pernas",
-  items: [
-    "Agachamento — 4x10",
-    "Leg press — 3x12",
-    "Stiff — 3x10",
-  ],
-};
+import { useUser } from "../contexts/UserContext";
+import { useWorkout } from "../contexts/WorkoutContext";
 
 export default function HomeScreen() {
+  const { user } = useUser();
+  const { workouts } = useWorkout();
+  
+  // Pega o primeiro treino disponível
+  const nextWorkout = workouts.length > 0 ? workouts[0] : null;
+
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Header name="Beatriz Honorato Pereira" />
+      <Header name={user?.name || "Usuário"} />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Acesso rápido</Text>
@@ -27,7 +25,13 @@ export default function HomeScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Próximo treino</Text>
-          <FoodPlanCard plan={mockWorkout} />
+          {nextWorkout ? (
+            <FoodPlanCard plan={nextWorkout} />
+          ) : (
+            <View style={styles.placeholderBox}>
+              <Text style={{ color: colors.dark }}>Nenhum treino disponível</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.scheduleWrap}>

@@ -1,14 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-type Plan = {
-  id: string;
-  name: string;
-  description: string;
-  days: string[];
-  exercises: string[];
-  active?: boolean;
-};
+import { Plan } from '../types';
 
 const PlanCard = ({ plan, onPress }: { plan: Plan; onPress?: () => void }) => {
   return (
@@ -23,7 +15,7 @@ const PlanCard = ({ plan, onPress }: { plan: Plan; onPress?: () => void }) => {
       <View style={styles.divider} />
       <Text style={styles.sectionTitle}>Exercícios:</Text>
       {plan.exercises.map((exercise, i) => (
-        <Text key={i} style={styles.exercise}>• {exercise}</Text>
+        <Text key={i} style={styles.exercise}>• {exercise.name} {exercise.sets}</Text>
       ))}
     </TouchableOpacity>
   );

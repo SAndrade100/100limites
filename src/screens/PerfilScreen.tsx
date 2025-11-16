@@ -4,11 +4,14 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomModal from '../components/CustomModal';
 import Header from '../components/Header';
+import { useUser } from '../contexts/UserContext';
 
 export default function PerfilScreen() {
+  const { user, logout } = useUser();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
+    logout();
     console.log('Usuário deslogado');
     setShowLogoutModal(false);
   };
@@ -22,22 +25,22 @@ export default function PerfilScreen() {
             source={require('../../assets/images/user.jpg')}
             style={styles.avatar}
           />
-          <Text style={styles.userName}>Beatriz Honorato Pereira</Text>
-          <Text style={styles.userEmail}>beatriz@example.com</Text>
+          <Text style={styles.userName}>{user?.name || 'Usuário'}</Text>
+          <Text style={styles.userEmail}>{user?.email || 'email@example.com'}</Text>
           
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>45</Text>
+              <Text style={styles.statNumber}>{user?.stats.totalWorkouts || 0}</Text>
               <Text style={styles.statLabel}>treinos</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>12</Text>
+              <Text style={styles.statNumber}>{user?.stats.weeksActive || 0}</Text>
               <Text style={styles.statLabel}>semanas</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>78%</Text>
+              <Text style={styles.statNumber}>{user?.stats.consistency || 0}%</Text>
               <Text style={styles.statLabel}>consistência</Text>
             </View>
           </View>

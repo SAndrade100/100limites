@@ -4,34 +4,11 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/Header';
 import PlanCard from '../components/PlanCard';
-
-const mockPlans = [
-  {
-    id: 'p1',
-    name: 'Treino A — Pernas',
-    description: 'Foco em membros inferiores e glúteos',
-    days: ['Segunda', 'Quinta'],
-    exercises: ['Agachamento 4x10', 'Leg Press 3x12', 'Stiff 3x10', 'Cadeira Extensora 3x12'],
-    active: true,
-  },
-  {
-    id: 'p2',
-    name: 'Treino B — Peito / Tríceps',
-    description: 'Desenvolvimento peitoral e tríceps',
-    days: ['Terça', 'Sexta'],
-    exercises: ['Supino 4x8', 'Crucifixo 3x10', 'Tríceps Testa 3x12', 'Paralelas 3x10'],
-  },
-  {
-    id: 'p3',
-    name: 'Treino C — Costas / Bíceps',
-    description: 'Fortalecimento das costas e bíceps',
-    days: ['Quarta', 'Sábado'],
-    exercises: ['Puxada 4x10', 'Remada Curvada 3x10', 'Rosca Direta 3x12', 'Rosca Martelo 3x10'],
-  },
-];
+import { useWorkout } from '../contexts/WorkoutContext';
 
 export default function PlanosScreen() {
   const navigation = useNavigation<any>();
+  const { plans } = useWorkout();
 
   const handlePlanPress = (planId: string) => {
     navigation.navigate('PlanoDetails', { id: planId });
@@ -45,7 +22,7 @@ export default function PlanosScreen() {
         <Text style={styles.subtitle}>Divisão ABC — Hipertrofia</Text>
       </View>
       <FlatList
-        data={mockPlans}
+        data={plans}
         keyExtractor={(i) => i.id}
         renderItem={({ item }) => (
           <PlanCard plan={item} onPress={() => handlePlanPress(item.id)} />

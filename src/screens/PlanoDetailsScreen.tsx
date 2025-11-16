@@ -2,51 +2,14 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const mockPlans = [
-  {
-    id: 'p1',
-    name: 'Treino A — Pernas',
-    description: 'Foco em membros inferiores e glúteos',
-    days: ['Segunda', 'Quinta'],
-    exercises: [
-      { name: 'Agachamento Livre', sets: '4x10', rest: '90s', notes: 'Descer até paralelo ao chão' },
-      { name: 'Leg Press 45°', sets: '3x12', rest: '60s', notes: 'Pés na largura dos ombros' },
-      { name: 'Stiff', sets: '3x10', rest: '60s', notes: 'Manter as costas retas' },
-      { name: 'Cadeira Extensora', sets: '3x12', rest: '45s', notes: 'Extensão completa' },
-    ],
-  },
-  {
-    id: 'p2',
-    name: 'Treino B — Peito / Tríceps',
-    description: 'Desenvolvimento peitoral e tríceps',
-    days: ['Terça', 'Sexta'],
-    exercises: [
-      { name: 'Supino Reto', sets: '4x8', rest: '90s', notes: 'Barra até tocar o peito' },
-      { name: 'Supino Inclinado', sets: '3x10', rest: '60s', notes: 'Inclinação 30-45°' },
-      { name: 'Crucifixo', sets: '3x10', rest: '60s', notes: 'Cotovelos levemente flexionados' },
-      { name: 'Tríceps Testa', sets: '3x12', rest: '45s', notes: 'Cotovelos fixos' },
-    ],
-  },
-  {
-    id: 'p3',
-    name: 'Treino C — Costas / Bíceps',
-    description: 'Fortalecimento das costas e bíceps',
-    days: ['Quarta', 'Sábado'],
-    exercises: [
-      { name: 'Puxada Frontal', sets: '4x10', rest: '90s', notes: 'Pegada pronada larga' },
-      { name: 'Remada Curvada', sets: '3x10', rest: '60s', notes: 'Costas paralelas ao chão' },
-      { name: 'Rosca Direta', sets: '3x12', rest: '45s', notes: 'Cotovelos fixos' },
-      { name: 'Rosca Martelo', sets: '3x10', rest: '45s', notes: 'Pegada neutra' },
-    ],
-  },
-];
+import { useWorkout } from '../contexts/WorkoutContext';
 
 export default function PlanoDetailsScreen() {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { id } = route.params;
-  const plan = mockPlans.find(p => p.id === id);
+  const { getPlanById } = useWorkout();
+  const plan = getPlanById(id);
 
   if (!plan) {
     return (
