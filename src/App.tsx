@@ -3,11 +3,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { HistoryProvider, UserProvider, WorkoutProvider } from './contexts';
+import AddExerciseScreen from './screens/AddExerciseScreen';
+import CreateWorkoutScreen from './screens/CreateWorkoutScreen';
 import HistoricoScreen from './screens/HistoricoScreen';
 import HomeScreen from './screens/HomeScreen';
-import PerfilScreen from './screens/PerfilScreen';
+// PerfilScreen removed - replaced by CRUD screens
+import ExercisesScreen from './screens/ExercisesScreen';
 import PlanoDetailsScreen from './screens/PlanoDetailsScreen';
-import PlanosScreen from './screens/PlanosScreen';
+import PlanosCrudScreen from './screens/PlanosCrudScreen';
 import TreinoAtivoScreen from './screens/TreinoAtivoScreen';
 import TreinosScreen from './screens/TreinosScreen';
 
@@ -43,8 +46,23 @@ export default function App() {
         />
         <Stack.Screen 
           name="Planos" 
-          component={PlanosScreen}
+          component={PlanosCrudScreen}
           options={{ title: 'Meus Planos' }}
+        />
+        <Stack.Screen
+          name="Exercises"
+          component={ExercisesScreen}
+          options={{ title: 'Exercícios' }}
+        />
+        <Stack.Screen
+          name="CreateWorkout"
+          component={CreateWorkoutScreen}
+          options={{ title: 'Criar Plano' }}
+        />
+        <Stack.Screen
+          name="AddExercise"
+          component={AddExerciseScreen}
+          options={{ title: 'Adicionar Exercício' }}
         />
         <Stack.Screen 
           name="PlanoDetails" 
@@ -64,11 +82,7 @@ export default function App() {
           component={HistoricoScreen}
           options={{ title: 'Histórico' }}
         />
-        <Stack.Screen 
-          name="Perfil" 
-          component={PerfilScreen}
-          options={{ title: 'Perfil' }}
-        />
+        {/* Perfil removed - profile functionality replaced by user context or separate screens if needed */}
       </Stack.Navigator>
     </NavigationContainer>
         </HistoryProvider>

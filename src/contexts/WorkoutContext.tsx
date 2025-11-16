@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Plan, Workout } from '../types';
+import { Exercise, Plan, Workout } from '../types';
 
 interface WorkoutContextData {
   workouts: Workout[];
   plans: Plan[];
   loading: boolean;
+  exerciseLibrary: Exercise[];
   addWorkout: (workout: Workout) => Promise<void>;
   updateWorkout: (id: string, workout: Partial<Workout>) => Promise<void>;
   deleteWorkout: (id: string) => Promise<void>;
@@ -13,6 +14,9 @@ interface WorkoutContextData {
   updatePlan: (id: string, plan: Partial<Plan>) => Promise<void>;
   deletePlan: (id: string) => Promise<void>;
   getPlanById: (id: string) => Plan | undefined;
+  addExerciseToLibrary: (exercise: Exercise) => Promise<void>;
+  deleteExerciseFromLibrary: (name: string) => Promise<void>;
+  updateExerciseInLibrary: (originalName: string, exercise: Exercise) => Promise<void>;
 }
 
 const WorkoutContext = createContext<WorkoutContextData>({} as WorkoutContextData);
@@ -20,6 +24,7 @@ const WorkoutContext = createContext<WorkoutContextData>({} as WorkoutContextDat
 const STORAGE_KEYS = {
   WORKOUTS: '@100limites:workouts',
   PLANS: '@100limites:plans',
+  EXERCISES: '@100limites:exercises',
 };
 
 // Dados iniciais
@@ -81,9 +86,12 @@ const initialPlans: Plan[] = [
   },
 ];
 
+const initialExercises: Exercise[] = [];
+
 export const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [exerciseLibrary, setExerciseLibrary] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Carregar dados do AsyncStorage
@@ -111,6 +119,14 @@ export const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } else {
         setPlans(initialPlans);
         await AsyncStorage.setItem(STORAGE_KEYS.PLANS, JSON.stringify(initialPlans));
+      }
+      // carregar biblioteca de exercícios
+      const exercisesData = await AsyncStorage.getItem(STORAGE_KEYS.EXERCISES);
+      if (exercisesData) {
+        setExerciseLibrary(JSON.parse(exercisesData));
+      } else {
+        setExerciseLibrary(initialExercises);
+        await AsyncStorage.setItem(STORAGE_KEYS.EXERCISES, JSON.stringify(initialExercises));
       }
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -145,6 +161,25 @@ export const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ child
     await AsyncStorage.setItem(STORAGE_KEYS.PLANS, JSON.stringify(newPlans));
   };
 
+  // Exercise library
+  const addExerciseToLibrary = async (exercise: Exercise) => {
+    const newLib = [...exerciseLibrary, exercise];
+    setExerciseLibrary(newLib);
+    await AsyncStorage.setItem(STORAGE_KEYS.EXERCISES, JSON.stringify(newLib));
+  };
+
+  const deleteExerciseFromLibrary = async (name: string) => {
+    const newLib = exerciseLibrary.filter((e) => e.name !== name);
+    setExerciseLibrary(newLib);
+    await AsyncStorage.setItem(STORAGE_KEYS.EXERCISES, JSON.stringify(newLib));
+  };
+
+  const updateExerciseInLibrary = async (originalName: string, exercise: Exercise) => {
+    const newLib = exerciseLibrary.map((e) => (e.name === originalName ? exercise : e));
+    setExerciseLibrary(newLib);
+    await AsyncStorage.setItem(STORAGE_KEYS.EXERCISES, JSON.stringify(newLib));
+  };
+
   const updatePlan = async (id: string, updatedPlan: Partial<Plan>) => {
     const newPlans = plans.map((p) => (p.id === id ? { ...p, ...updatedPlan } : p));
     setPlans(newPlans);
@@ -166,6 +201,7 @@ export const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ child
       value={{
         workouts,
         plans,
+        exerciseLibrary,
         loading,
         addWorkout,
         updateWorkout,
@@ -174,6 +210,9 @@ export const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updatePlan,
         deletePlan,
         getPlanById,
+        addExerciseToLibrary,
+        deleteExerciseFromLibrary,
+        updateExerciseInLibrary,
       }}
     >
       {children}

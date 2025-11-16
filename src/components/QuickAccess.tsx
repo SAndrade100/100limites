@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -7,7 +7,6 @@ const items = [
   { key: "workouts", label: "Treinos", icon: <MaterialCommunityIcons name="dumbbell" size={20} color="#87084E" /> },
   { key: "plans", label: "Planos", icon: <MaterialCommunityIcons name="calendar-check" size={20} color="#87084E" /> },
   { key: "history", label: "Histórico", icon: <MaterialCommunityIcons name="history" size={20} color="#87084E" /> },
-  { key: "profile", label: "Perfil", icon: <MaterialIcons name="person" size={20} color="#87084E" /> },
 ];
 
 const QuickAccess = () => {
@@ -25,10 +24,6 @@ const QuickAccess = () => {
     }
     if (key === 'history') {
       navigation.navigate('Historico');
-      return;
-    }
-    if (key === 'profile') {
-      navigation.navigate('Perfil');
       return;
     }
     console.log('pressed', key);
