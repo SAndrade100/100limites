@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../components/Header';
 import { useHistory } from '../contexts/HistoryContext';
@@ -31,6 +31,38 @@ export default function HistoricoScreen() {
     return [...history].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [history]);
 
+  // Calendar month state
+  const today = new Date();
+  const [calendarYear, setCalendarYear] = React.useState(today.getFullYear());
+  const [calendarMonth, setCalendarMonth] = React.useState(today.getMonth());
+
+  const trainedDays = React.useMemo(() => {
+    // returns array of day numbers that have history entries in the month
+    return new Set(sorted
+      .filter((h) => {
+        const d = new Date(h.date);
+        return d.getFullYear() === calendarYear && d.getMonth() === calendarMonth;
+      })
+      .map((h) => new Date(h.date).getDate())
+    );
+  }, [sorted, calendarYear, calendarMonth]);
+
+  const startOfMonth = new Date(calendarYear, calendarMonth, 1);
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+  const startWeekday = startOfMonth.getDay(); // 0 (Sun) - 6 (Sat)
+
+  function prevMonth() {
+    const d = new Date(calendarYear, calendarMonth - 1, 1);
+    setCalendarYear(d.getFullYear());
+    setCalendarMonth(d.getMonth());
+  }
+
+  function nextMonth() {
+    const d = new Date(calendarYear, calendarMonth + 1, 1);
+    setCalendarYear(d.getFullYear());
+    setCalendarMonth(d.getMonth());
+  }
+
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <Header name="Histórico" />
@@ -56,7 +88,44 @@ export default function HistoricoScreen() {
             <Text style={styles.placeholderText}>Nenhum treino registrado ainda</Text>
           </View>
         ) : (
-          <FlatList
+          <>
+            {/* Calendar */}
+            <View style={{ marginBottom: 16 }}>
+              <View style={styles.calendarHeader}>
+                <TouchableOpacity onPress={prevMonth}>
+                  <Text style={{ color: colors.primary }}>{'<'}</Text>
+                </TouchableOpacity>
+                <Text style={styles.calendarTitle}>{startOfMonth.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</Text>
+                <TouchableOpacity onPress={nextMonth}>
+                  <Text style={{ color: colors.primary }}>{'>'}</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.calendarGrid}>
+                {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d) => (
+                  <View key={d} style={styles.calendarCellHeader}><Text style={styles.calendarCellHeaderText}>{d}</Text></View>
+                ))}
+
+                {/* empty cells for first week */}
+                {Array.from({ length: startWeekday }).map((_, i) => (
+                  <View key={'e' + i} style={styles.calendarCell} />
+                ))}
+
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const day = i + 1;
+                  const trained = trainedDays.has(day);
+                  return (
+                    <View key={day} style={styles.calendarCell}>
+                      <View style={[styles.calendarDay, trained && styles.calendarDayTrained]}>
+                        <Text style={[styles.calendarDayText, trained && styles.calendarDayTextTrained]}>{day}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            <FlatList
             data={sorted}
             keyExtractor={(i) => i.id}
             renderItem={({ item }) => (
@@ -74,6 +143,7 @@ export default function HistoricoScreen() {
             ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
             contentContainerStyle={{ paddingBottom: 80, paddingTop: 8 }}
           />
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -121,4 +191,15 @@ const styles = StyleSheet.create({
   historyTitle: { fontWeight: '700', color: colors.dark },
   historySub: { color: '#666', fontSize: 12 },
   historyDuration: { fontWeight: '700', color: colors.primary },
+  calendarHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  calendarTitle: { fontWeight: '700', color: colors.dark },
+  calendarGrid: { flexDirection: 'row', flexWrap: 'wrap' },
+  calendarCellHeader: { width: `${100 / 7}%`, alignItems: 'center', paddingVertical: 4 },
+  calendarCellHeaderText: { color: '#6b6b6b', fontSize: 12 },
+  calendarCell: { width: `${100 / 7}%`, alignItems: 'center', paddingVertical: 6 },
+  calendarDay: { width: 32, height: 32, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
+  calendarDayTrained: { backgroundColor: colors.primary },
+  calendarDayText: { color: colors.dark },
+  calendarDayTextTrained: { color: '#fff' },
 });
+

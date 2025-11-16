@@ -7,6 +7,7 @@ interface HistoryContextData {
   loading: boolean;
   addWorkoutToHistory: (workout: WorkoutHistory) => Promise<void>;
   getHistoryByMonth: (year: number, month: number) => WorkoutHistory[];
+  getTrainedDatesByMonth: (year: number, month: number) => number[];
   getTotalStats: () => {
     totalWorkouts: number;
     totalMinutes: number;
@@ -53,6 +54,16 @@ export const HistoryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   };
 
+  const getTrainedDatesByMonth = (year: number, month: number) => {
+    const items = getHistoryByMonth(year, month);
+    const set = new Set<number>();
+    items.forEach((it) => {
+      const d = new Date(it.date);
+      set.add(d.getDate());
+    });
+    return Array.from(set).sort((a, b) => a - b);
+  };
+
   const getTotalStats = () => {
     const totalWorkouts = history.length;
     const totalMinutes = history.reduce((acc, item) => acc + item.duration, 0);
@@ -67,9 +78,10 @@ export const HistoryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       value={{
         history,
         loading,
-        addWorkoutToHistory,
-        getHistoryByMonth,
-        getTotalStats,
+  addWorkoutToHistory,
+  getHistoryByMonth,
+  getTrainedDatesByMonth,
+  getTotalStats,
       }}
     >
       {children}
