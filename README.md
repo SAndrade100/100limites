@@ -15,39 +15,58 @@ Este repositório contém uma versão protótipo do app "100limites" com telas p
 
 ## Stack técnico
 
-- Expo (SDK) + Expo Router (file-based routing)
-- React 19 / React Native 0.81.x
+- React Native 0.81.x (bare workflow)
+- React Navigation (native-stack)
+- React 19
 - TypeScript (strict)
 - react-native-safe-area-context
 - @expo/vector-icons
-- EAS Build (para builds Android / iOS)
+- Expo modules (expo-status-bar, expo-font, etc.)
 
 ## Estrutura do projeto (resumo)
 
-- `app/` - telas e rotas (index.tsx, treinos.tsx, planos.tsx, historico.tsx, perfil.tsx, treino-ativo/*)
-- `components/` - componentes reutilizáveis (Header, QuickAccess, PlanCard, WorkoutCard, CustomModal)
+- `src/screens/` - telas principais (HomeScreen, TreinosScreen, PlanosScreen, etc.)
+- `src/components/` - componentes reutilizáveis (Header, QuickAccess, PlanCard, WorkoutCard, CustomModal)
+- `src/App.tsx` - configuração de navegação (NavigationContainer + Stack)
+- `android/` - código nativo Android (após prebuild)
+- `ios/` - código nativo iOS (após prebuild)
 - `assets/` - imagens e ícones
-- `constants/`, `hooks/`, `scripts/` - utilitários e configurações auxiliares
-- `eas.json` - configuração de build EAS
+- `index.js` - entry point do app
 - `app.json` - configuração Expo (bundleIdentifier, package, plugins)
 
-## Como rodar em desenvolvimento (Linux/macOS/Windows)
+## Como rodar em desenvolvimento
 
-1. Instale dependências:
+### 1. Instale dependências:
 
 ```bash
 npm install
-# ou
-pnpm install
 ```
 
-2. Inicie Metro / Expo:
+### 2. Inicie o Metro Bundler:
 
 ```bash
 npx expo start
+# ou
+npx react-native start
 ```
 
-Abra o app no Expo Go (Android) escaneando o QR code. No iOS o Expo Go também funciona, mas depende do fluxo de bibliotecas nativas usadas no projeto.
+### 3. Rode no Android (requer Android Studio + SDK):
+
+```bash
+npx expo run:android
+# ou
+cd android && ./gradlew assembleDebug
+```
+
+### 4. Rode no iOS (requer macOS + Xcode):
+
+```bash
+npx expo run:ios
+# ou
+cd ios && pod install && cd .. && xcodebuild
+```
+
+**Nota:** Como o projeto está em bare workflow, não é mais possível usar Expo Go. É necessário compilar o app nativamente.
 
 ## Gerar APK Android (EAS Build, via nuvem) — recomendado no Linux
 
@@ -82,9 +101,30 @@ npx eas build --platform ios --profile preview
 
 ## Scripts úteis
 
-- `npx expo start` — iniciar servidor de desenvolvimento
-- `npx eas build --platform android --profile preview` — gerar APK Android
-- `npx eas build --platform ios --profile development` — gerar build iOS para simulador (macOS)
+- `npm start` / `npx expo start` — iniciar Metro Bundler
+- `npx expo run:android` — compilar e rodar no Android
+- `npx expo run:ios` — compilar e rodar no iOS (requer macOS)
+- `cd android && ./gradlew assembleDebug` — gerar APK debug localmente
+- `cd android && ./gradlew bundleRelease` — gerar AAB de produção
+- `npx eas build --platform android --profile preview` — gerar APK via EAS (nuvem)
+- `npx eas build --platform ios --profile preview` — gerar build iOS via EAS (nuvem)
+
+## Migração Expo → React Native CLI
+
+Este projeto foi migrado de **Expo Managed Workflow** para **Bare Workflow** (React Native CLI) com as seguintes mudanças:
+
+- ✅ `expo-router` substituído por `@react-navigation/native-stack`
+- ✅ Estrutura de pastas migrada de `app/` para `src/screens/` + `src/components/`
+- ✅ Pastas nativas `android/` e `ios/` geradas via `npx expo prebuild`
+- ✅ Entry point alterado de `expo-router/entry` para `index.js`
+- ✅ Navegação via `useNavigation()` e `navigation.navigate()`
+
+### Por que migrar?
+
+- ✅ Maior controle sobre código nativo (configurações Android/iOS)
+- ✅ Possibilidade de usar bibliotecas nativas sem limitações
+- ✅ Builds locais mais rápidos (não depende apenas de EAS)
+- ✅ Integração mais direta com ferramentas nativas
 
 ## Dados e persistência
 
