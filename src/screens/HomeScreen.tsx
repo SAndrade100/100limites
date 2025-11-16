@@ -9,10 +9,10 @@ import { useWorkout } from "../contexts/WorkoutContext";
 
 export default function HomeScreen() {
   const { user } = useUser();
-  const { workouts } = useWorkout();
-  
-  // Pega o primeiro treino disponível
-  const nextWorkout = workouts.length > 0 ? workouts[0] : null;
+  const { plans } = useWorkout();
+
+  // Pega o plano ativo, se houver, senão o primeiro plano
+  const nextPlan = plans && plans.length > 0 ? (plans.find((p) => p.active) ?? plans[0]) : null;
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
@@ -25,8 +25,12 @@ export default function HomeScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Próximo treino</Text>
-          {nextWorkout ? (
-            <FoodPlanCard plan={nextWorkout} />
+          {nextPlan ? (
+            <FoodPlanCard plan={{
+              title: nextPlan.name,
+              items: nextPlan.exercises.map((ex) => `${ex.name} ${ex.sets}`),
+              id: nextPlan.id,
+            }} />
           ) : (
             <View style={styles.placeholderBox}>
               <Text style={{ color: colors.dark }}>Nenhum treino disponível</Text>
